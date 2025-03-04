@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Views -->
-    <!-- Definición de vistas para la gestión de proyectos -->
     <record id="view_creativeminds_proyecto_form" model="ir.ui.view">
         <field name="name">Nuevo proyecto</field>
         <field name="model">creativeminds.proyecto</field>
         <field name="arch" type="xml">
             <form string="Proyecto">
                 <sheet>
-                    <!-- Campos básicos del proyecto -->
                     <group>
                         <field name="proyecto_id" />
                         <field name="nombre" />
@@ -20,7 +18,6 @@
                         <field name="descripcion" />
                         <field name="cliente" />
                     </group>
-                    <!-- Más detalles del proyecto -->
                     <group>
                         <field name="porcentaje_progreso" />
                         <field name="fecha_inicio" />
@@ -30,7 +27,6 @@
                         <field name="presupuesto_estimado" />
                         <field name="costo_total_recursos" readonly="1" />
                     </group>
-                    <!-- Datos adicionales sobre tareas, recursos y riesgos -->
                     <group>
                         <field name="tareas_ids"/>
                         <field name="recursos_ids"/>
@@ -40,15 +36,13 @@
                         <field name="comentarios" />
                         <field name="recordatorios_automaticos" />
                     </group>
-                    <!-- Botones de acción para ver tareas, miembros, recursos, o duplicar proyecto -->
                     <group>
-                        <button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary"/>
-                        <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary"/>
-                        <button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary"/>
-                        <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" context="{'proyecto_id': active_id}" />
+                        <p><button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" />
+                        <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" />
+                        <button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" />
+                        <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" /></p>
                     </group>
                 </sheet>
-                <!-- Funcionalidad de conversación para seguimiento de mensajes -->
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" />
                     <field name="message_ids" widget="mail_thread" />
@@ -56,8 +50,35 @@
             </form>
         </field>
     </record>
+	
+	<record id="view_creativeminds_control_panel_dashboard" model="ir.ui.view">
+        <field name="name">Panel de Control Dashboard</field>
+        <field name="model">creativeminds.control.panel</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="o_dashboard_container">
+                        <h1 class="text-center">Panel de Control de CreativeMinds</h1>
+                        <!-- Botón para cargar datos desde la API -->
+                        <div class="text-center" style="margin-bottom: 15px;">
+                            <button name="action_load_data_from_api" type="object" string="Cargar Datos" class="btn-primary"/>
+                        </div>
+                        <div class="row mt16">
+                            <div class="col-md-12">
+                                <div class="alert alert-info text-center">
+                                    <h3>Esperando conexión con API externa</h3>
+                                    <p>Este panel mostrará automáticamente las métricas y KPIs cuando la API esté conectada.</p>
+                                    <p>No se requiere la creación manual de registros ya que los datos se generan automáticamente basados en proyectos, empleados, tareas y equipos.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Aquí irá el contenido del dashboard cuando la API esté conectada -->
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-    <!-- Vista tipo árbol para listar proyectos -->
     <record id="view_creativeminds_proyecto_tree" model="ir.ui.view">
         <field name="name">Lista de proyectos</field>
         <field name="model">creativeminds.proyecto</field>
@@ -79,13 +100,12 @@
         </field>
     </record>
 
-    <!-- Vista tipo Kanban para proyectos -->
     <record id="view_creativeminds_proyecto_kanban" model="ir.ui.view">
         <field name="name">Kanban proyectos</field>
         <field name="model">creativeminds.proyecto</field>
         <field name="arch" type="xml">
             <kanban js_class="project_kanban" quick_create="1" create="1" edit="1" delete="1">
-                <field name="id" />
+                <field name="proyecto_id" />
                 <field name="nombre" />
                 <field name="estado" />
                 <field name="fecha_inicio" />
@@ -103,11 +123,11 @@
                             <p><small>Prioridad: <field name="prioridad" /></small></p>
                             <p><small>Costo Total: <field name="costo_total" /></small></p>
                             <p><small>Costo Total de Recursos: <field name="costo_total_recursos" /></small></p>
-                            <p><button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
-                                <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary" context="{'proyecto_id': id}" /></p>
+                            <p><button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" />
+                                <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" /></p>
                             <div class="o_kanban_footer">
-                                <p><button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
-                                <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" context="{'proyecto_id': id}" /></p>
+                                <p><button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary" context="{'proyecto_id': proyecto_id}" />
+                                <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" /></p>
                             </div>
                         </div>
                     </t>
@@ -115,38 +135,46 @@
             </kanban>
         </field>
     </record>
+	
+	<record id="view_creativeminds_control_panel_tree" model="ir.ui.view">
+		<field name="name">Panel de Control</field>
+		<field name="model">creativeminds.control.panel</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="nombre" />
+                <field name="proyectos_ids" />
+			</tree>
+		</field>
+	</record>
 
-    <!-- Vista lista de empleados -->
     <record id="view_creativeminds_employees_tree" model="ir.ui.view">
         <field name="name">Lista de empleados</field>
         <field name="model">creativeminds.empleado</field>
         <field name="arch" type="xml">
             <tree string="Empleados">
-                <field name="id"/>
+                <field name="empleado_id"/>
                 <field name="name" />
                 <field name="dni"/>
-                <field name="phone"/>
-                <field name="email" />
+                <field name="apellido1"/>
+                <field name="apellido2" />
                 <field name="fecha_nacimiento" />
                 <field name="fecha_incorporacion" />
                 <field name="puesto" />
                 <field name="proyecto_id" />
-                <field name="tareas_ids" />
                 <field name="departamento" />
                 <field name="puesto" />
             </tree>
         </field>
     </record>
 
-    <!-- Vista formulario de empleados -->
     <record model="ir.ui.view" id="view_creativeminds_employee_form">
-        <field name="name">Nuevo empleado</field>
-        <field name="model">creativeminds.empleado</field>
-        <field name="arch" type="xml">
+          <field name="name">Nuevo empleado</field>
+          <field name="model">creativeminds.empleado</field>
+          <field name="arch" type="xml">
             <form >
                 <sheet string ="Modelo para la gestión de empleadoss">
                     <div class = "oe_title">
-                        <h1>Empleado_<field name="id"/></h1>
+                        <h1>Empleado_<field name="empleado_id"/></h1>
                     </div>
                     <div class = "row">
                         <div class = "oe_title mt-4">
@@ -158,48 +186,58 @@
                         <field name="foto" widget="image" class="oe_right" options="{'size':[0,200]}"/>
                         </div>
                     </div>
-                    <!-- Pestaña de datos generales del empleado -->
                     <separator string="Datos personales" colspan="4"/>
                     <group col="3">
                         <group >
-                            <field name="name"/>
+                            <field name="apellido1"/>
                             <field name="fecha_nacimiento"/>
                             <field name="fecha_incorporacion"/>
                         </group>
                         <group >
-                            <field name="phone"/>
+                            <field name="apellido2"/>
                             <field name="departamento" />
                             <field name="puesto" />
                         </group>
                         <group >
-                            <field name="email" />
+                            <field name="name" />
                             <field name="disponibilidad" />
+							<field name="partner_id"/>
                         </group>
                     </group>
                     <separator string="Equipos" colspan="4"/>
-                    <field name="equipo_id" widget="many2many_tags" can_create="False" can_write="False"/>
+                    <field name="equipo_id" widget="many2many_tags" can_create="False" can_write="False">
+                    <tree>
+                        <field name="nombre" />
+                        <field name="responsable_id" />
+                        <field name="descripcion" />
+                    </tree>
+                    </field>
                     <separator string="Proyectos" colspan="4"/>
-                    <field name="proyecto_id" widget="many2many_tags" can_create="False" can_write="False"/>
-                    <separator string="Tareas" colspan="4"/>
-                    <field name="tareas_ids" widget="one2many"/>
+                    <field name="proyecto_id" widget="many2many_tags" can_create="False" can_write="False">
+                        <tree>
+                            <field name="nombre" />
+                            <field name="porcentaje_progreso" />
+                            <field name="fecha_inicio" />
+                            <field name="fecha_fin" />
+                            <field name="prioridad" />
+                            <field name="responsable_id" />
+                            <field name="estado" />
+                        </tree>
+                    </field>
+                    <field name="horas_trabajadas_ids" widget="Many2one">
+                            <tree>
+                                <field name="horas"/>
+                                <field name="proyecto_id"/>
+                            </tree>
+                    </field>
                 </sheet>
-                <notebook>
-                    <!-- Pestaña de actividades -->
-                <page string="Actividades">
-                        <field name="activity_ids" widget="mail_activity" options="{'no_create': True}" />
-                    </page>
-                    <!-- Pestaña de historial de cambios o notas -->
-                    <page string="Historial">
-                        <field name="message_ids" widget="mail_thread" options="{'no_create': True}" />
-                    </page>
-                </notebook>
+                <div class="oe_chatter">
+                  <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
-        </field>
+          </field>
     </record>
 
-    <!-- Vistas y acciones para equipos, tareas y recursos -->
-    <!-- Estas vistas permiten gestionar los equipos, tareas y recursos de los proyectos -->
-    <!-- Vista de equipos -->
     <record id="view_creativeminds_teams_tree" model="ir.ui.view">
         <field name="name">Lista de equipos</field>
         <field name="model">creativeminds.equipo</field>
@@ -214,7 +252,8 @@
         </field>
     </record>
 
-    <!-- Vista de tareas -->
+    
+
     <record id="view_creativeminds_task_tree" model="ir.ui.view">
         <field name="name">Lista de tareas</field>
         <field name="model">creativeminds.tarea</field>
@@ -231,7 +270,6 @@
         </field>
     </record>
 
-    <!-- Vista de recursos -->
     <record id="view_creativeminds_resource_tree" model="ir.ui.view">
         <field name="name">Lista de recursos</field>
         <field name="model">creativeminds.recurso</field>
@@ -249,21 +287,8 @@
             </tree>
         </field>
     </record>
-
-    <!-- Vista de panel de control -->
-    <record id="view_creativeminds_control_panel_tree" model="ir.ui.view">
-        <field name="name">Panel de Control</field>
-        <field name="model">creativeminds.control.panel</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="nombre" />
-                <field name="proyectos_ids" widget="many2many_tags" />
-            </tree>
-        </field>
-    </record>
         
-    <!-- Definición de acciones para mostrar las vistas en la interfaz de usuario -->
-    <!-- Estas acciones permiten abrir las vistas de proyectos, empleados, tareas, recursos, ect -->
+    <!-- actions opening views on models -->
     <record id="action_creativeminds_proyecto" model="ir.actions.act_window">
         <field name="name">Proyectos</field>
         <field name="res_model">creativeminds.proyecto</field>
@@ -282,11 +307,15 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="action_creativeminds_control_panel" model="ir.actions.act_window">
-        <field name="name">Panel de Control</field>
-        <field name="res_model">creativeminds.control.panel</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+    <!-- Actualizar la acción para mostrar solo la vista de dashboard -->
+	<record id="action_creativeminds_control_panel" model="ir.actions.act_window">
+		<field name="name">Panel de Control</field>
+		<field name="res_model">creativeminds.control.panel</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="view_creativeminds_control_panel_dashboard"/>
+		<field name="target">current</field>
+		<field name="limit">1</field>
+	</record>
 
     <record id="action_creativeminds_task" model="ir.actions.act_window">
         <field name="name">Tareas de Proyecto</field>
@@ -322,14 +351,13 @@
         <field name="domain">[('id', 'in', parent.proyecto_id)]</field>
     </record>
 
-    <!-- Menús para acceder a las distintas secciones del módulo -->
+    <!-- Menus -->
     <menuitem 
         id="menu_creativeminds_proyecto_root" 
         name="CreativeMinds"
         web_icon="creativeminds_proyecto,static/description/icon.png"
         sequence="10"/>
 
-    <!-- Submenús para proyectos, tareas -->
     <menuitem 
         id="menu_projects" 
         name="Proyectos"
@@ -344,7 +372,6 @@
         action="action_creativeminds_proyecto"
         sequence="12"/>
         
-    <!-- Menús para tareas, empleados, equipos y panel de control -->
     <menuitem 
         id="menu_project_tasks" 
         name="Ver Tareas"

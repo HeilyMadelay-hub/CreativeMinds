@@ -19,6 +19,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'data/dashboard_data.xml',
     ],
     'installable': True,
     'application': True,
