@@ -14,3 +14,7 @@ access_creativeminds_equipo_user,access.creativeminds.equipo.user,model_creative
 access_creativeminds_equipo_manager,access.creativeminds.equipo.manager,model_creativeminds_equipo,project.group_project_manager,1,1,1,1
 access_creativeminds_control_panel_user,access.creativeminds.control.panel.user,model_creativeminds_control_panel,base.group_user,1,0,0,0
 access_creativeminds_control_panel_manager,access.creativeminds.control.panel.manager,model_creativeminds_control_panel,project.group_project_manager,1,1,1,1
+access_creativeminds_metrica_user,access.creativeminds.metrica.user,model_creativeminds_metrica,base.group_user,1,0,0,0
+access_creativeminds_metrica_manager,access.creativeminds.metrica.manager,model_creativeminds_metrica,project.group_project_manager,1,1,1,1
+access_creativeminds_recomendacion_user,access.creativeminds.recomendacion.user,model_creativeminds_recomendacion,base.group_user,1,0,0,0
+access_creativeminds_recomendacion_manager,access.creativeminds.recomendacion.manager,model_creativeminds_recomendacion,project.group_project_manager,1,1,1,1
