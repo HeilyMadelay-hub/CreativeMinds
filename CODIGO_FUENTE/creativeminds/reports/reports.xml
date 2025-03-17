@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+            id="action_report_metricas"
+            model="creativeminds.proyecto"
+            string="Informe de Métricas"
+            report_type="qweb-pdf"
+            name="creativeminds.report_metricas"
+            file="creativeminds.report_metricas"
+            print_report_name="'Informe_Metricas_' + object.name"
+        />
+    </data>
+</odoo>

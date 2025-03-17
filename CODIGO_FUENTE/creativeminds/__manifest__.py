@@ -16,12 +16,15 @@
         'mail',
         'web',
     ],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/views.xml',
-        'data/dashboard_data.xml',
+    'data': [ 
+        'security/ir.model.access.csv',  # SIEMPRE primero la seguridad
+        'views/views.xml',               # Principal vista consolidada
+        'views/templates.xml',           # Vistas para renderizado web
+        'reports/reports.xml',           # Informes PDF o QWeb
     ],
+    'assets': {},
     'installable': True,
     'application': True,
     'auto_install': False,
+
 }

@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+        <!-- Views -->
+        <!-- Definición de vistas para la gestión de proyectos -->
+        <record id="view_creativeminds_proyecto_form" model="ir.ui.view">
+            <field name="name">Nuevo proyecto</field>
+            <field name="model">creativeminds.proyecto</field>
+            <field name="arch" type="xml">
+                <form string="Proyecto">
+                    <sheet>
+                        <div class = "oe_title">
+                            <h1><field name="nombre"/></h1>
+                        </div>
+                        <!-- Campos básicos del proyecto -->
+                        <group>
+                            <field name="descripcion" />
+                            <group>
+                                <field name="costo_por_hora" />
+                                <field name="horas_asignadas" />
+                                <field name="costo_total" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="estado"/>
+                                <field name="cliente" />
+                            </group>
+                        </group>
+                        <!-- Más detalles del proyecto -->
+                        <group>
+                            <divider string="Empleados asignados"/>
+                            <field name="empleado_id"/>
+                            <group>
+                                <field name="fecha_inicio" />
+                                <field name="fecha_fin" />
+                                <field name="prioridad" />
+                            </group>
+                            <group>
+                                <field name="porcentaje_progreso" widget="progressbar" options="{'type': 'circle'}"/>
+                                <field name="presupuesto_estimado" />
+                                <field name="costo_total_recursos" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="responsable_id" options="{'no_open': True, 'can_create': False}" 
+                                    context="{'default_proyecto_id': id}" />
+                            </group>
+                        </group>
+                        <!-- Datos adicionales sobre tareas, recursos y riesgos -->
+                        <group>
+                            <field name="tareas_ids" widget="one2many" options="{'no_create': True, 'editable': True}">
+                                <tree>
+                                    <field name="nombre" />
+                                    <field name="responsable_id" />
+                                    <field name="fecha_inicio" />
+                                    <field name="fecha_fin" />
+                                    <field name="estado" />
+                                </tree>
+                            </field>
+                            <field name="recursos_ids" widget="one2many" options="{'no_create': True, 'editable': True}">
+                                <tree>
+                                    <field name="nombre" />
+                                    <field name="empleado_id" />
+                                    <field name="costo_total" />
+                                    <field name="fecha_inicio" />
+                                    <field name="fecha_fin" />
+                                    <field name="estado" />
+                                </tree>
+                            </field>
+                            <field name="riesgos" />
+                            <field name="hitos" />
+                            <field name="dependencias" />
+                            <field name="recordatorios_automaticos" />
+                            <field name="comentarios" />
+                            <!-- Retroalimentación del Cliente -->
+                            <field name="feedback_ids" widget="one2many" options="{'no_create': True, 'editable': True}">
+                                <tree>
+                                    <field name="cliente"/>
+                                    <field name="date"/>
+                                    <field name="feedback_text"/>
+                                    <field name="positive_points"/>
+                                    <field name="improvement_points"/>
+                                    <field name="priority"/>
+                                </tree>
+                            </field>
+                            <!-- Evaluaciones de Ideas -->
+                            <field name="idea_ids" widget="one2many" options="{'no_create': True, 'editable': True}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="score"/>
+                                    <field name="feasibility"/>
+                                    <field name="impact"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <!-- Botones de acción para ver tareas, miembros, recursos, o duplicar proyecto -->
+                        <group>
+                            <group>
+                                <button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
+                            </group>
+                            <group>
+                                <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
+                            </group>
+                            <group>
+                                <button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
+                            </group>
+                            <group>
+                                <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <!-- Funcionalidad de conversación para seguimiento de mensajes -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Vista tipo árbol para listar proyectos -->
+        <record id="view_creativeminds_proyecto_tree" model="ir.ui.view">
+            <field name="name">Lista de proyectos</field>
+            <field name="model">creativeminds.proyecto</field>
+            <field name="arch" type="xml">
+                <tree string="Proyectos">
+                    <field name="id" />
+                    <field name="nombre" />
+                    <field name="estado" />
+                    <field name="fecha_inicio" />
+                    <field name="fecha_fin" />
+                    <field name="prioridad" />
+                    <field name="costo_total" />
+                    <field name="costo_total_recursos" />
+                    <field name="responsable_id" />
+                    <button name="ver_tareas" string="Ver Tareas" type="object" />
+                    <button name="ver_miembros" string="Ver Miembros" type="object" />
+                    <button name="ver_recursos" string="Ver Recursos" type="object" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista tipo Kanban para proyectos -->
+        <record id="view_creativeminds_proyecto_kanban" model="ir.ui.view">
+            <field name="name">Kanban proyectos</field>
+            <field name="model">creativeminds.proyecto</field>
+            <field name="arch" type="xml">
+                <kanban js_class="project_kanban" quick_create="1" create="1" edit="1" delete="1">
+                    <field name="id" />
+                    <field name="nombre" />
+                    <field name="estado" />
+                    <field name="fecha_inicio" />
+                    <field name="fecha_fin" />
+                    <field name="prioridad" />
+                    <field name="costo_total" />
+                    <field name="costo_total_recursos" />
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="o_kanban_card">
+                                <strong><field name="nombre" /></strong>
+                                <p><small>Estado: <field name="estado" /></small></p>
+                                <p><small>Fecha de Inicio: <field name="fecha_inicio" /></small></p>
+                                <p><small>Fecha de Fin: <field name="fecha_fin" /></small></p>
+                                <p><small>Prioridad: <field name="prioridad" /></small></p>
+                                <p><small>Costo Total: <field name="costo_total" /></small></p>
+                                <p><small>Costo Total de Recursos: <field name="costo_total_recursos" /></small></p>
+                                <p><button name="ver_tareas" string="Ver Tareas" type="object" class="btn-secondary" context="{'proyecto_id': id}" />
+                                    <button name="ver_miembros" string="Ver Miembros" type="object" class="btn-secondary" context="{'proyecto_id': id}" /></p>
+                                <div class="o_kanban_footer">
+                                    <p><button name="ver_recursos" string="Ver Recursos" type="object" class="btn-secondary" context="{'proyecto_id':id}" />
+                                    <button name="duplicar_proyecto" string="Duplicar Proyecto" type="object" class="btn-primary" /></p>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+         <!-- Vista Formulario de Feedback con Acciones a Realizar -->
+        <record id="view_client_feedback_form" model="ir.ui.view">
+            <field name="name">creativeminds.feedback.form</field>
+            <field name="model">creativeminds.feedback</field>
+            <field name="arch" type="xml">
+                <form string="Retroalimentación del Cliente">
+                    <sheet>
+                        <group>
+                            <field name="proyecto_id"/>
+                            <field name="cliente"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="feedback_text"/>
+                            <field name="positive_points"/>
+                            <field name="improvement_points"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Abrir la Vista de `FeedbackAction` -->
+        <record id="action_feedback_action" model="ir.actions.act_window">
+            <field name="name">Acción de Feedback</field>
+            <field name="res_model">creativeminds.feedback.action</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Vista lista de empleados -->
+        <record id="view_creativeminds_employees_tree" model="ir.ui.view">
+            <field name="name">Lista de empleados</field>
+            <field name="model">creativeminds.empleado</field>
+            <field name="arch" type="xml">
+                <tree string="Empleados">
+                    <field name="id"/>
+                    <field name="name" />
+                    <field name="apellido1"/>
+                    <field name="apellido2" />
+                    <field name="dni"/>
+                    <field name="fecha_nacimiento" />
+                    <field name="fecha_incorporacion" />
+                    <field name="proyecto_id" />
+                    <field name="tareas_ids" />
+                    <field name="departamento" />
+                    <field name="puesto" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista formulario de empleados -->
+        <record model="ir.ui.view" id="view_creativeminds_employee_form">
+            <field name="name">Nuevo empleado</field>
+            <field name="model">creativeminds.empleado</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet string ="Modelo para la gestión de empleadoss">
+                        <div class = "oe_title">
+                            <h1>Empleado_<field name="id"/></h1>
+                        </div>
+                        <div class = "row">
+                            <div class = "oe_title mt-4">
+                            <h1>
+                                <field name = "dni" placeholder="12345678Z" class="oe_inline"/>                 
+                            </h1>
+                            </div>
+                            <div class ="mt-4">
+                            <field name="foto" widget="image" class="oe_right" options="{'size':[0,200]}"/>
+                            </div>
+                        </div>
+                        <!-- Tabla de datos generales del empleado -->
+                        <separator string="Datos personales" colspan="4"/>
+                        <group col="4">
+                            <group >
+                                <field name="name"/>
+                                <field name="apellido1"/>
+                                <field name="apellido2"/>
+                            </group>
+                            <group >
+                                <field name="departamento" />
+                                <field name="puesto" />
+                                <field name="disponibilidad" />
+                            </group>
+                            <group col="2">
+                                <field name="fecha_nacimiento"/>
+                                <field name="fecha_incorporacion"/>
+                                <field name="partner_id"/>
+                            </group>
+                        </group>
+                        <separator string="Equipos" colspan="4"/>
+                        <field name="equipo_id" widget="many2many_tags" can_create="False" can_write="False"/>
+                        <separator string="Proyectos" colspan="4"/>
+                        <field name="proyecto_id" widget="many2many_tags" can_create="False" can_write="False"/>
+                        <separator string="Tareas" colspan="4"/>
+                        <field name="tareas_ids" widget="one2many"/>
+                    </sheet>
+                        <!-- Pestaña de historial de cambios o notas -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vistas y acciones para equipos, tareas y recursos -->
+        <!-- Estas vistas permiten gestionar los equipos, tareas y recursos de los proyectos -->
+        <!-- Vista de equipos -->
+        <record id="view_creativeminds_teams_tree" model="ir.ui.view">
+            <field name="name">Lista de equipos</field>
+            <field name="model">creativeminds.equipo</field>
+            <field name="arch" type="xml">
+                <tree string="Equipos">
+                    <field name="nombre" />
+                    <field name="nombre" />
+                    <field name="empleado_id"/>
+                    <field name="responsable_id" />
+                    <field name="descripcion" />
+                    <field name="n_miembros" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de tareas -->
+        <record id="view_creativeminds_task_tree" model="ir.ui.view">
+            <field name="name">Lista de tareas</field>
+            <field name="model">creativeminds.tarea</field>
+            <field name="arch" type="xml">
+                <tree string="Tareas">
+                    <field name="proyecto_id" />
+                    <field name="nombre" />
+                    <field name="descripcion" />
+                    <field name="responsable_id" />
+                    <field name="fecha_inicio" />
+                    <field name="fecha_fin" />
+                    <field name="estado" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Formulario de tareas -->
+        <record id="view_creativeminds_task_form" model="ir.ui.view">
+            <field name="name">Nueva tarea</field>
+            <field name="model">creativeminds.tarea</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet string="Tareas del Proyecto">
+                        <group>
+                            <group>
+                                <field name="proyecto_id" can_create="False" can_write="True"/>
+                            </group>
+                            <group>
+                                <field name="nombre"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="descripcion"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="responsable_id" can_create="True" can_write="True"/>
+                                <field name="fecha_fin"/>
+                            </group>
+                            <group>
+                                <field name="fecha_inicio"/>
+                                <field name="estado"/>
+                            </group>
+                        </group>
+                        <group>
+                            <separator/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de recursos -->
+        <record id="view_creativeminds_resource_tree" model="ir.ui.view">
+            <field name="name">Lista de recursos</field>
+            <field name="model">creativeminds.recurso</field>
+            <field name="arch" type="xml">
+                <tree string="Recursos">
+                    <field name="nombre" />
+                    <field name="empleado_id" />
+                    <field name="proyecto_id" />
+                    <field name="costo_por_hora" />
+                    <field name="horas_asignadas" />
+                    <field name="costo_total" />
+                    <field name="fecha_inicio" />
+                    <field name="fecha_fin" />
+                    <field name="estado" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Formulario de recursos -->
+        <record model="ir.ui.view" id="view_creativeminds_resource_form">
+            <field name="name">Nuevo recurso</field>
+            <field name="model">creativeminds.recurso</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet string="Recursos del Proyecto">
+                        <group>
+                            <group>
+                                <field name="nombre"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="empleado_id" can_create="False" can_write="True">
+                                <tree string="Empleados">
+                                    <field name="id"/>
+                                    <field name="name"/>
+                                    <field name="apellido1"/>
+                                    <field name="apellido2"/>
+                                    <field name="tareas_ids"/>
+                                    <field name="departamento"/>
+                                    <field name="puesto"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="proyecto_id" can_create="False" can_write="True"/>
+                                <field name="horas_asignadas" on_change="1"/>
+                                <field name="fecha_inicio"/>
+                                <field name="estado"/>
+                            </group>
+                            <group>
+                                <field name="costo_por_hora" on_change="1"/>
+                                <field name="costo_total"/>
+                                <field name="fecha_fin"/>
+                            </group>
+                        </group>
+                        <group>
+                            <separator/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Lista para Ideas -->
+        <record id="view_idea_evaluation_tree" model="ir.ui.view">
+            <field name="name">creativeminds.idea.tree</field>
+            <field name="model">creativeminds.idea</field>
+            <field name="arch" type="xml">
+                <tree string="Evaluaciones de Ideas">
+                    <field name="name"/>
+                    <field name="proyecto_id"/>
+                    <field name="creator_id"/>
+                    <field name="score"/>
+                    <field name="feasibility"/>
+                    <field name="impact"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de Formulario para Ideas -->
+        <record id="view_idea_evaluation_form" model="ir.ui.view">
+            <field name="name">creativeminds.idea.form</field>
+            <field name="model">creativeminds.idea</field>
+            <field name="arch" type="xml">
+                <form string="Evaluación de Idea">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="proyecto_id"/>
+                            <field name="creator_id"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                            <field name="pros"/>
+                            <field name="cons"/>
+                        </group>
+                        <group>
+                            <field name="feasibility"/>
+                            <field name="impact"/>
+                            <field name="score" readonly="1"/>
+                            <field name="vote_ids">
+                                <tree string="Votos">
+                                    <field name="empleado_id"/>
+                                    <field name="score"/>
+                                    <field name="comment"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Lista para Retroalimentación de Clientes -->
+        <record id="view_client_feedback_tree" model="ir.ui.view">
+            <field name="name">creativeminds.feedback.tree</field>
+            <field name="model">creativeminds.feedback</field>
+            <field name="arch" type="xml">
+                <tree string="Retroalimentación del Cliente">
+                    <field name="proyecto_id"/>
+                    <field name="cliente"/>
+                    <field name="date"/>
+                    <field name="priority"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de Formulario para Retroalimentación de Clientes -->
+        <record id="view_client_feedback_form" model="ir.ui.view">
+            <field name="name">creativeminds.feedback.form</field>
+            <field name="model">creativeminds.feedback</field>
+            <field name="arch" type="xml">
+                <form string="Retroalimentación del Cliente">
+                    <sheet>
+                        <group>
+                            <field name="proyecto_id"/>
+                            <field name="cliente"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="feedback_text"/>
+                            <field name="positive_points"/>
+                            <field name="improvement_points"/>
+                        </group>
+                        <group>
+                            <field name="priority"/>
+                            <field name="action_items">
+                                <tree string="Acciones">
+                                    <field name="action_text"/>
+                                    <field name="assigned_to"/>
+                                    <field name="due_date"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>        
+
+        <!-- Definición de acciones para mostrar las vistas en la interfaz de usuario -->
+        <!-- Estas acciones permiten abrir las vistas de proyectos, empleados, tareas, recursos, ect -->
+        <record id="action_creativeminds_proyecto" model="ir.actions.act_window">
+            <field name="name">Proyectos</field>
+            <field name="res_model">creativeminds.proyecto</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <record id="action_creativeminds_employees" model="ir.actions.act_window">
+            <field name="name">Empleados</field>
+            <field name="res_model">creativeminds.empleado</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_creativeminds_teams" model="ir.actions.act_window">
+            <field name="name">Equipos</field>
+            <field name="res_model">creativeminds.equipo</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_creativeminds_tasks" model="ir.actions.act_window">
+            <field name="name">Tareas</field>
+            <field name="res_model">creativeminds.tarea</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Se deja por si si quiere usar en el futuro -->
+        <record id="action_creativeminds_resources" model="ir.actions.act_window">
+            <field name="name">Recursos</field>
+            <field name="res_model">creativeminds.recurso</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_generar_informe_metricas" model="ir.actions.server">
+            <field name="name">Generar Informe de Métricas</field>
+            <field name="model_id" ref="model_creativeminds_proyecto"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.generar_informe_metricas()
+            </field>
+        </record>
+
+        <record id="action_report_metricas" model="ir.actions.report">
+            <field name="name">Informe de Métricas</field>
+            <field name="model">creativeminds.proyecto</field>
+            <field name="report_name">creativeminds.report_metricas</field>
+            <field name="report_type">qweb-pdf</field>
+        </record>
+
+        <!-- Vista de Acción para el modelo Idea -->
+        <record id="action_idea_evaluation" model="ir.actions.act_window">
+            <field name="name">Evaluación de Ideas</field>
+            <field name="res_model">creativeminds.idea</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_idea_evaluation_tree"/>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Vista de Acción para el modelo ClientFeedback -->
+        <record id="action_client_feedback" model="ir.actions.act_window">
+            <field name="name">Retroalimentación del Cliente</field>
+            <field name="res_model">creativeminds.feedback</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_client_feedback_tree"/>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Menús para acceder a las distintas secciones del módulo -->
+        <menuitem 
+            id="menu_creativeminds_proyecto_root" 
+            name="CreativeMinds"
+            web_icon="creativeminds_proyecto,static/description/icon.png"
+            sequence="10"/>
+
+        <!-- Submenús para proyectos, tareas -->
+        <menuitem 
+            id="menu_projects" 
+            name="Proyectos"
+            parent="menu_creativeminds_proyecto_root"
+            action="action_creativeminds_proyecto"
+            sequence="10"/>
+
+        <menuitem 
+            id="menu_projects_projects" 
+            name="Ver proyectos"
+            parent="menu_projects"
+            action="action_creativeminds_proyecto"
+            sequence="10"/>
+            
+        <menuitem 
+            id="menu_project_tasks" 
+            name="Ver Tareas"
+            parent="menu_projects"
+            action="action_creativeminds_tasks"
+            sequence="20"/>
+
+        <!-- Menús para empleados, equipos y panel de control -->
+        <menuitem 
+            id="menu_employees" 
+            name="Empleados"
+            parent="menu_creativeminds_proyecto_root"
+            action="action_creativeminds_employees"
+            sequence="20"/>
+
+        <menuitem 
+            id="menu_teams" 
+            name="Equipos"
+            parent="menu_creativeminds_proyecto_root"
+            action="action_creativeminds_teams"
+            sequence="30"/>
+
+        <menuitem 
+            id="menu_informes" 
+            name="Informes de Métricas" 
+            parent="menu_creativeminds_proyecto_root"
+            sequence="40" />
+
+        <menuitem 
+            id="menu_informe_metricas" 
+            name="Crear Informe de Métricas" 
+            parent="menu_informes" 
+            action="action_generar_informe_metricas" />
+    </data>
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="creativeminds.report_metricas">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <h2>Informe de Métricas</h2>
+
+                    <h3>Métricas de Proyectos</h3>
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Total Proyectos</th>
+                            <td><span t-esc="metrics['total_proyectos']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Proyectos en Progreso</th>
+                            <td><span t-esc="metrics['proyectos_en_progreso']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Proyectos Finalizados</th>
+                            <td><span t-esc="metrics['proyectos_finalizados']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Proyectos Retrasados</th>
+                            <td><span t-esc="metrics['proyectos_retrasados']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Progreso Promedio</th>
+                            <td><span t-esc="metrics['progreso_promedio']"/> %</td>
+                        </tr>
+                    </table>
+
+                    <h3>Métricas de Presupuesto</h3>
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Presupuesto Total</th>
+                            <td><span t-esc="metrics['presupuesto_total']"/> €</td>
+                        </tr>
+                        <tr>
+                            <th>Costo Actual Total</th>
+                            <td><span t-esc="metrics['costo_actual_total']"/> €</td>
+                        </tr>
+                        <tr>
+                            <th>Eficiencia Presupuestaria</th>
+                            <td><span t-esc="metrics['eficiencia_presupuestaria']"/> %</td>
+                        </tr>
+                    </table>
+
+                    <h3>Métricas de Tareas</h3>
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Total Tareas</th>
+                            <td><span t-esc="metrics['total_tareas']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Tareas Completadas</th>
+                            <td><span t-esc="metrics['tareas_completadas']"/></td>
+                        </tr>
+                        <tr>
+                            <th>Tareas Pendientes</th>
+                            <td><span t-esc="metrics['tareas_pendientes']"/></td>
+                        </tr>
+                    </table>
+
+                    <h3>Métricas de Empleados</h3>
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Empleados Disponibles</th>
+                            <td><span t-esc="metrics['empleados_disponibles']"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
+
